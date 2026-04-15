@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bizim Anı Sayacımız</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 35px 25px;
+      border-radius: 24px;
+      max-width: 550px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      margin-bottom: 25px;
+      opacity: 0.95;
+    }
+
+    .counter {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.18);
+      padding: 20px;
+      border-radius: 18px;
+    }
+
+    .number {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .label {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .message {
+      margin-top: 25px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .heart {
+      font-size: 1.6rem;
+      margin-top: 18px;
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.15);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .counter {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .number {
+        font-size: 1.7rem;
+      }
+    }
+
+    .start-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .start-btn {
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid #fff;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .start-btn:hover {
+      background: rgba(255, 255, 255, 0.5);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- İlk Giriş Ekranı (Tarayıcıların ses engelini aşmak için) -->
+  <div id="start-overlay" class="start-overlay">
+    <button id="start-btn" class="start-btn">Anılarımıza Gitmek İçin Tıkla ❤️</button>
+  </div>
+  
+  <!-- Müzik dosyası 'müzik.mp3' ismiyle HTML ile aynı klasörde olmalıdır -->
+  <audio id="intro-music" src="müzik.mp3"></audio>
+
+  <div class="card">
+    <h1>Seninle Geçen Zaman Sayacı</h1>
+    <p class="subtitle">Tanıştığımız günden beri birlikte biriktirdiğimiz anılar...</p>
+
+    <div class="counter">
+      <div class="box">
+        <div class="number" id="days">0</div>
+        <div class="label">Gün</div>
+      </div>
+      <div class="box">
+        <div class="number" id="hours">0</div>
+        <div class="label">Saat</div>
+      </div>
+      <div class="box">
+        <div class="number" id="minutes">0</div>
+        <div class="label">Dakika</div>
+      </div>
+      <div class="box">
+        <div class="number" id="seconds">0</div>
+        <div class="label">Saniye</div>
+      </div>
+    </div>
+
+    <p class="message">
+
+    </p>
+
+    <div class="heart">❤️</div>
+  </div>
+
+  <script>
+    const startDate = new Date("2026-03-24T14:42:00"); // Burayı değiştir
+
+    function updateCounter() {
+      const now = new Date();
+      const diff = now - startDate;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("days").textContent = days;
+      document.getElementById("hours").textContent = hours;
+      document.getElementById("minutes").textContent = minutes;
+      document.getElementById("seconds").textContent = seconds;
+    }
+
+    updateCounter();
+    setInterval(updateCounter, 1000);
+
+    // Müzik ve Giriş Ekranı İşlemleri
+    const startBtn = document.getElementById("start-btn");
+    const overlay = document.getElementById("start-overlay");
+    const introMusic = document.getElementById("intro-music");
+
+    startBtn.addEventListener("click", () => {
+      // Ekranı yavaşça kaybet
+      overlay.style.opacity = "0";
+      setTimeout(() => {
+        overlay.style.display = "none";
+      }, 500);
+      
+      // Müziği oynat
+      introMusic.volume = 0.5; // Ses seviyesi (0.0 ile 1.0 arası)
+      introMusic.play().catch(error => console.log("Ses çalınamadı:", error));
+    });
+  </script>
+</body>
+
+</html>
